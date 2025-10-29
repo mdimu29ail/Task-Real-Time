@@ -1,17 +1,20 @@
-"use client";
+'use client';
 
-import { HiOutlineTrash } from "react-icons/hi";
-import { useRouter } from "next/navigation";
+import { HiOutlineTrash } from 'react-icons/hi';
+import { useRouter } from 'next/navigation';
 
 export default function RemoveBtn({ id }) {
   const router = useRouter();
   const removeTopic = async () => {
-    const confirmed = confirm("Are you sure?");
+    const confirmed = confirm('Are you sure?');
 
     if (confirmed) {
-      const res = await fetch(`http://localhost:3000/api/topics?id=${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://crud-mongo-rdiq0h8ae-md-imus-projects.vercel.app/api/topics?id=${id}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       if (res.ok) {
         router.refresh();
