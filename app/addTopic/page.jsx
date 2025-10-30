@@ -1,5 +1,5 @@
 'use client';
-
+import toast from 'react-hot-toast';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -13,7 +13,7 @@ export default function AddTopic() {
     e.preventDefault();
 
     if (!title || !description) {
-      alert('Title and description are required.');
+      toast.error('Title and description are required.');
       return;
     }
 
@@ -30,12 +30,15 @@ export default function AddTopic() {
       );
 
       if (res.ok) {
+        toast.success('Topic added successfully!');
         router.push('/');
+        router.refresh();
       } else {
-        throw new Error('Failed to create a topic');
+        toast.error('Failed to create topic.');
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error('Something went wrong.');
     }
   };
 

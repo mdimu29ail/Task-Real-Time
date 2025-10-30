@@ -1,131 +1,3 @@
-// 'use client';
-
-// import { supabase } from '../libs/supabase-client';
-// import { useState } from 'react';
-// // import { supabase } from '../lib/supabase-client';
-
-// export default function AuthForm() {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [isSignUp, setIsSignUp] = useState(false);
-//   const [loading, setLoading] = useState(false);
-//   const [message, setMessage] = useState('');
-
-//   const handleAuth = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     setMessage('');
-
-//     try {
-//       if (isSignUp) {
-//         const { error } = await supabase.auth.signUp({ email, password });
-//         if (error) throw error;
-//         setMessage(
-//           'Sign-up successful! Please check your email to verify your account.'
-//         );
-//       } else {
-//         const { error } = await supabase.auth.signInWithPassword({
-//           email,
-//           password,
-//         });
-//         if (error) throw error;
-//         setMessage('Login successful!');
-//       }
-//     } catch (error: any) {
-//       setMessage(error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleGoogleLogin = async () => {
-//     setLoading(true);
-//     setMessage('');
-
-//     try {
-//       const { error } = await supabase.auth.signInWithOAuth({
-//         provider: 'google',
-//         options: {
-//           redirectTo: window.location.origin, // redirect back to your app after login
-//         },
-//       });
-//       if (error) throw error;
-//     } catch (error: any) {
-//       setMessage(error.message);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="w-full p-5">
-//       <h2 className="text-5xl text-center px-3">
-//         {isSignUp ? 'Sign Up' : 'Login'}
-//       </h2>
-
-//       <form
-//         onSubmit={handleAuth}
-//         style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
-//       >
-//         <input
-//           type="email"
-//           placeholder="Email address"
-//           value={email}
-//           onChange={e => setEmail(e.target.value)}
-//           required
-//           style={{ padding: 10 }}
-//         />
-//         <input
-//           type="password"
-//           placeholder="Password"
-//           value={password}
-//           onChange={e => setPassword(e.target.value)}
-//           required
-//           style={{ padding: 10 }}
-//         />
-//         <button type="submit" disabled={loading} style={{ padding: 10 }}>
-//           {loading ? 'Please wait...' : isSignUp ? 'Sign Up' : 'Login'}
-//         </button>
-//       </form>
-
-//       <p style={{ marginTop: 10 }}>
-//         {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
-//         <button
-//           onClick={() => setIsSignUp(!isSignUp)}
-//           style={{
-//             color: 'blue',
-//             border: 'none',
-//             background: 'none',
-//             cursor: 'pointer',
-//           }}
-//         >
-//           {isSignUp ? 'Login' : 'Sign Up'}
-//         </button>
-//       </p>
-
-//       <hr style={{ margin: '20px 0' }} />
-
-//       <button
-//         onClick={handleGoogleLogin}
-//         disabled={loading}
-//         style={{
-//           padding: 10,
-//           width: '100%',
-//           backgroundColor: '#4285F4',
-//           color: 'white',
-//           border: 'none',
-//           cursor: 'pointer',
-//         }}
-//       >
-//         {loading ? 'Connecting...' : 'Continue with Google'}
-//       </button>
-
-//       {message && <p style={{ marginTop: 15, color: 'gray' }}>{message}</p>}
-//     </div>
-//   );
-// }
-
-// 2ndd
 'use client';
 
 import { useState } from 'react';
@@ -138,27 +10,39 @@ export default function AuthForm() {
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
   const router = useRouter();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setMessage('');
+    setIsError(false);
 
     try {
       if (isSignUp) {
         const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        toast.success('Sign-up successful! Check your email for verification.');
+
+        toast.success('Sign-up successful!');
+        setMessage(
+          '✅ Sign-up successful! Please check your email to verify your account.'
+        );
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
+
         toast.success('Login successful!');
-        router.push('/'); // ✅ Redirect to home page
+        setMessage('✅ Login successful! Redirecting...');
+        router.push('/');
       }
     } catch (error: any) {
+      setMessage(`❌ ${error.message}`);
+      setIsError(true);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -167,18 +51,20 @@ export default function AuthForm() {
 
   const handleGoogleLogin = async () => {
     setLoading(true);
+    setMessage('');
+    setIsError(false);
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          redirectTo: process.env.NEXT_PUBLIC_SITE_URL,
-        },
+        options: { redirectTo: window.location.origin },
       });
 
       if (error) throw error;
       toast.loading('Redirecting to Google…');
-    } catch (err) {
-      console.error('Google sign-in error:', err);
+    } catch (err: any) {
+      setMessage(`❌ ${err.message || 'Failed to sign in with Google'}`);
+      setIsError(true);
       toast.error('Failed to sign in with Google');
     } finally {
       setLoading(false);
@@ -186,7 +72,7 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="w-full mx-auto  p-6 bg-white rounded-2xl shadow-md">
+    <div className="w-full mx-auto p-6 bg-white rounded-2xl shadow-md">
       <h2 className="text-3xl font-semibold text-center mb-6">
         {isSignUp ? 'Create an Account' : 'Welcome Back'}
       </h2>
@@ -224,7 +110,10 @@ export default function AuthForm() {
       <p className="mt-4 text-center text-sm text-gray-600">
         {isSignUp ? 'Already have an account?' : 'Don’t have an account?'}{' '}
         <button
-          onClick={() => setIsSignUp(!isSignUp)}
+          onClick={() => {
+            setIsSignUp(!isSignUp);
+            setMessage('');
+          }}
           className="text-blue-600 hover:underline font-medium"
         >
           {isSignUp ? 'Login' : 'Sign Up'}
@@ -270,6 +159,16 @@ export default function AuthForm() {
         </svg>
         {loading ? 'Connecting…' : 'Continue with Google'}
       </button>
+
+      {message && (
+        <p
+          className={`mt-5 text-center text-sm ${
+            isError ? 'text-red-600' : 'text-green-600'
+          }`}
+        >
+          {message}
+        </p>
+      )}
     </div>
   );
 }

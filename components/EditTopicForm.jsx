@@ -1,5 +1,5 @@
 'use client';
-
+import toast from 'react-hot-toast';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -24,14 +24,16 @@ export default function EditTopicForm({ id, title, description }) {
         }
       );
 
-      if (!res.ok) {
-        throw new Error('Failed to update topic');
+      if (res.ok) {
+        toast.success('Topic updated successfully!');
+        router.push('/');
+        router.refresh();
+      } else {
+        toast.error('Failed to update topic.');
       }
-
-      router.refresh();
-      router.push('/');
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error('Something went wrong.');
     }
   };
 
