@@ -3,7 +3,7 @@ import EditTopicForm from '../../../components/EditTopicForm';
 const getTopicById = async id => {
   try {
     const res = await fetch(
-      `https://crud-mongo-rdiq0h8ae-md-imus-projects.vercel.app/api/topics/${id}`,
+      `https://crud-mongo-db-iota.vercel.app/api/topics/${id}`,
       {
         cache: 'no-store',
       }

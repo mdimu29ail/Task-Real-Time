@@ -171,7 +171,7 @@ export default function AuthForm() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: process.env.NEXT_PUBLIC_BASE_URL,
+          redirectTo: process.env.NEXT_PUBLIC_SITE_URL,
         },
       });
 

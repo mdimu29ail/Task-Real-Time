@@ -14,7 +14,7 @@ export default function EditTopicForm({ id, title, description }) {
 
     try {
       const res = await fetch(
-        `https://crud-mongo-rdiq0h8ae-md-imus-projects.vercel.app/api/topics/${id}`,
+        `https://crud-mongo-db-iota.vercel.app/api/topics/${id}`,
         {
           method: 'PUT',
           headers: {

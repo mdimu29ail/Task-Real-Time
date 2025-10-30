@@ -1,20 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  turbopack: {
-    root: 'C:\\Users\\MD Imu\\Desktop\\jobTask',
-  },
+  // <-- Define a variable
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**', // allow all HTTPS hosts
+        hostname: '**',
       },
       {
         protocol: 'http',
-        hostname: '**', // allow all HTTP hosts (optional)
+        hostname: '**',
       },
     ],
   },
+  output: 'standalone',
 };
 
+// Use the CommonJS export syntax for .js files
 module.exports = nextConfig;

@@ -10,7 +10,7 @@ export default function RemoveBtn({ id }) {
 
     if (confirmed) {
       const res = await fetch(
-        `https://crud-mongo-rdiq0h8ae-md-imus-projects.vercel.app/api/topics?id=${id}`,
+        `https://crud-mongo-db-iota.vercel.app/api/topics?id=${id}`,
         {
           method: 'DELETE',
         }
